@@ -4,6 +4,16 @@ from sqlalchemy.orm import Session
 from models import Expense
 
 
+def get_all_expense(db: Session):
+    try:
+        return db.query(Expense).all()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Exception on fetching expenses data",
+        )
+
+
 def get_by_id(db: Session, expense_id: int) -> Expense:
     try:
         expense = db.query(Expense).filter(Expense.id == expense_id).first()
@@ -16,7 +26,7 @@ def get_by_id(db: Session, expense_id: int) -> Expense:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Exception on fetching user: ({e})",
+            detail=f"Exception on fetching expenses: ({e})",
         )
 
 
@@ -32,7 +42,7 @@ def get_by_user_id(db: Session, user_id: int) -> Expense:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Exception on fetching user: ({e})",
+            detail=f"Exception on fetching expense: ({e})",
         )
 
 
@@ -42,7 +52,7 @@ def add_expense(db: Session, expense_data: dict, user_id: int) -> Expense:
         expense = Expense(**expense_data)
         db.add(expense)
         db.commit()
-        return expense
+        return True
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
