@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from models import Expense
@@ -27,6 +28,33 @@ def get_by_id(db: Session, expense_id: int) -> Expense:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Exception on fetching expenses: ({e})",
+        )
+
+
+def get_expense_by_date_range(db: Session, start_date, end_date, user_id):
+    try:
+        expenses = (
+            db.query(Expense)
+            .filter(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.user_id == user_id,
+                )
+            )
+            .all()
+        )
+        if not expenses:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No expenses found between {start_date} and {end_date}",
+            )
+
+        return expenses
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Exception on fetching expenses by date range: ({e})",
         )
 
 

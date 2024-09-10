@@ -3,9 +3,11 @@ from typing import Union
 
 from pydantic import BaseModel, Field, field_validator
 
+from extras import ExpenseCategory
+
 
 class CreateExpense(BaseModel):
-    category: str = Field(..., examples=["Food"])
+    category: ExpenseCategory = Field(..., examples=[ExpenseCategory.FOOD])
     description: str = Field(..., examples=["Lunch at cafe"])
     amount: float = Field(
         ...,
@@ -21,7 +23,7 @@ class CreateExpense(BaseModel):
 
 
 class UpdateExpense(BaseModel):
-    category: str | None = Field(None, examples=["Food"])
+    category: ExpenseCategory | None = Field(None, examples=[ExpenseCategory.FOOD])
     description: str | None = Field(None, examples=["Lunch at cafe"])
     amount: float | None = Field(
         None,
@@ -38,7 +40,7 @@ class UpdateExpense(BaseModel):
 
 class ResponseExpense(BaseModel):
     id: int = Field(..., examples=[0])
-    category: str | None = Field(None, examples=["Food"])
+    category: ExpenseCategory | None = Field(None, examples=[ExpenseCategory.FOOD])
     description: str | None = Field(None, examples=["Lunch at cafe"])
     amount: float | None = Field(
         None,

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import List
 
 from fastapi import APIRouter, Depends, Request, status
@@ -10,6 +11,39 @@ from dependencies import AuthenticationRequired
 from schemas import CreateExpense, ResponseExpense, UpdateExpense
 
 router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
+
+
+@router.get("/")
+def get_all_expenses(
+    request: Request,
+    past_week: bool | None = None,
+    past_month: bool | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    db: Session = Depends(get_db),
+):
+    if past_week:
+        end_date = datetime.now()
+        print("Past Week")
+        start_date = end_date - timedelta(days=7)
+        return crud_expenses.get_expense_by_date_range(
+            db, start_date, end_date, request.user.id
+        )
+    elif past_month:
+        print("Past Month")
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=30)
+        return crud_expenses.get_expense_by_date_range(
+            db, start_date, end_date, request.user.id
+        )
+    elif start_date and end_date:
+        print("Start Date -> End Date")
+        return crud_expenses.get_expense_by_date_range(
+            db, start_date, end_date, request.user.id
+        )
+    else:
+        print("Else")
+        return crud_expenses.get_by_user_id(db, request.user.id)
 
 
 @router.post("/")
