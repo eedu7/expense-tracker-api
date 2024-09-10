@@ -9,3 +9,4 @@ $ cd expense-tracker-api
 $ pip install -r requirements.txt
 $ python main.py
 ```
+![image](https://github.com/user-attachments/assets/0eddf485-724b-4ce3-9981-7d98cf961388)
