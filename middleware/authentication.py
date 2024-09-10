@@ -2,9 +2,8 @@ from typing import Optional, Tuple
 
 from jose import JWTError
 from starlette.authentication import AuthenticationBackend
-from starlette.middleware.authentication import (
-    AuthenticationMiddleware as BaseAuthenticationMiddleware,
-)
+from starlette.middleware.authentication import \
+    AuthenticationMiddleware as BaseAuthenticationMiddleware
 from starlette.requests import HTTPConnection
 
 from schemas.users import CurrentUser
@@ -31,7 +30,6 @@ class AuthBackend(AuthenticationBackend):
 
         try:
             payload = decode_token(token)
-            print(payload)
             user_id = payload.get("user_id")
         except JWTError:
             return False, current_user

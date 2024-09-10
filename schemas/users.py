@@ -1,5 +1,4 @@
-
-from pydantic import BaseModel, EmailStr,Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class User(BaseModel):
@@ -13,6 +12,7 @@ class RegisterUser(User):
 
 class LoginUser(User):
     pass
+
 
 class CurrentUser(BaseModel):
     id: int = Field(None, description="User ID")

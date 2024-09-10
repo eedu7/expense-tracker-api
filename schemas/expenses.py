@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field, field_validator
 from datetime import date
 from typing import Union
+
+from pydantic import BaseModel, Field, field_validator
+
 
 class CreateExpense(BaseModel):
     category: str = Field(..., examples=["Food"])
