@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr
+
+from pydantic import BaseModel, EmailStr,Field
 
 
 class User(BaseModel):
@@ -12,3 +13,9 @@ class RegisterUser(User):
 
 class LoginUser(User):
     pass
+
+class CurrentUser(BaseModel):
+    id: int = Field(None, description="User ID")
+
+    class Config:
+        validate_assignment = True

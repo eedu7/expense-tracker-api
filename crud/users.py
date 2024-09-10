@@ -2,8 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from models import User
+from schemas.token import Token
 from utils.password import get_password_hash, verify_password
-
+from utils.jwt import encode_token
 
 def get_all(db: Session):
     try:
@@ -40,10 +41,27 @@ def register_user(db: Session, user_data: dict) -> bool:
         )
 
 
-def login_user(db: Session, user_data: dict) -> bool:
+def login_user(db: Session, user_data: dict) -> Token:
     user = get_by_email(db, email=user_data.get("email"))
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "User does not exist.")
     if not verify_password(user_data.get("password"), user.password):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid credentials.")
-    return True
+    data = {
+        "user_id": user.id,
+        "email": user.email,
+        "type": "access-token"
+    }
+    access_token, exp = encode_token(data)
+    data = {
+        "user_id": user.id,
+        "email": user.email,
+        "type": "refresh-token"
+    }
+    refresh_token, exp = encode_token(data)
+    return Token(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        exp=exp
+    )
+
