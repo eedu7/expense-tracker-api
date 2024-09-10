@@ -9,10 +9,9 @@ def get_all(db: Session):
     try:
         return db.query(User).all()
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
 def get_by_email(db: Session, email: str) -> User | None:
     try:
         return db.query(User).filter(User.email == email).first()
